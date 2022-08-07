@@ -1,25 +1,26 @@
 const { getUserByEmail } = require("../controller/user");
 
 module.exports = (option) => {
-  return function (req, res, next) {
+  return async function (req, res, next) {
     let savedUserId = {};
 
     const allowedUrl = ["/", "/guest", "/discover", "/about"];
-    // console.log(allowedUrl.indexOf);
-    if (allowedUrl.indexOf(req.url) !== -1 || option.off) {
+
+    if (
+      allowedUrl.indexOf(req.url) !== -1 ||
+      option.off ||
+      (req.url === "/user" && req.method === "POST")
+    ) {
       next();
       return;
     }
     if (validateToken(req)) {
-      req.user.email = req.headers["authentication"];
-      let loggedInUser = getUserByEmail(req, res);
-      if (loggedInUser.data) {
-        req.user = loggedInUser.data;
+      let loggedInUser = await getUserByEmail(req.headers["authentication"]);
+      if (loggedInUser) {
+        req.data = loggedInUser;
         next();
-        return;
       } else {
         res.status(500).json({ message: "Something went wrong!" });
-        return;
       }
       return;
     } else {
@@ -28,7 +29,7 @@ module.exports = (option) => {
   };
   function validateToken(req) {
     let token = req.headers["authentication"];
-    if (token === "shubh@mail.com") return true;
+    if (token === "shubh@mail.com" || token === "sdsd@mail.com") return true;
     else return false;
   }
 };

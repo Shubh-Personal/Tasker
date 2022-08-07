@@ -72,19 +72,17 @@ const getUser = async (req, res) => {
   }
 };
 
-const getUserByEmail = async (req, res) => {
+const getUserByEmail = async (email) => {
   try {
-    const email = req.user.email;
-    console.log(req);
-    if (!email) res.status(412).json({ message: "email not found" });
+    if (!email) return null;
     else {
       let user = await UserModel.where("email").equals(email).limit(1);
-      if (user.length > 0) res.json({ data: user });
-      else res.json({ message: "No user found" });
+      if (user.length > 0) return user[0];
+      else return null;
     }
   } catch (error) {
     console.error("Error", error.message);
-    res.status(500).json({ message: error.message });
+    return null;
   }
 };
 module.exports = {
