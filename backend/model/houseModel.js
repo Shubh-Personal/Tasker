@@ -16,6 +16,7 @@ const houseSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     required: true,
     ref: "User",
+    immutable: true,
   },
 });
 

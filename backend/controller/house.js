@@ -90,7 +90,7 @@ const addHouseMates = async (req, res) => {
           let newHouseMates = req.body.HOUSEMATES;
           if (newHouseMates[0]) {
             let newHouseMateList = newHouseMates.filter(
-              (mate) => houseMates.indexOf(mate) !== -1
+              (mate) => houseMates.indexOf(mate) === -1
             );
             let allHouseMates = [...houseMates, ...newHouseMateList];
             house.HOUSEMATES = allHouseMates;
@@ -145,6 +145,24 @@ const removeHouseMates = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const getHouseById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) throw new Error("Input data missing!");
+    else {
+      const data = await houseModel.findById(id);
+      if (data) {
+        res.status(200).json({ house: data });
+      } else {
+        throw new Error("No house found");
+      }
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message, error: true });
+  }
+};
 const inputDataError = (res) => {
   res.status(401).json({ message: "Missing input data!" });
 };
@@ -156,4 +174,5 @@ module.exports = {
   updateHouse,
   addHouseMates,
   removeHouseMates,
+  getHouseById,
 };

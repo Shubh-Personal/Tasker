@@ -9,6 +9,7 @@ const dbConnection = require("./db");
 
 const userRoute = require("./routes/user");
 const houseRoutes = require("./routes/house");
+const taskRoutes = require("./routes/task");
 
 const app = express();
 app.use(logger({ loginRequired: true }));
@@ -17,6 +18,8 @@ app.use(express.json());
 
 app.use("/user", userRoute);
 app.use("/house", houseRoutes);
+app.use("/task", taskRoutes);
+
 dbConnection();
 const PORT = process.env.PORT || 3000;
 
